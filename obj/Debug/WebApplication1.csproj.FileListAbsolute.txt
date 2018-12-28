@@ -120,3 +120,5 @@ C:\LSZ\aaaaaaa\WebApplication1\WebApplication1\obj\Debug\WebApplication1.csproj.
 C:\LSZ\aaaaaaa\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
 C:\LSZ\aaaaaaa\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
 C:\LSZ\aaaaaaa\WebApplication1\WebApplication1\obj\Debug\WebApplication1.csprojAssemblyReference.cache
+C:\LSZ\Product-lsz\TestCode\obj\Debug\WebApplication1.dll
+C:\LSZ\Product-lsz\TestCode\obj\Debug\WebApplication1.pdb

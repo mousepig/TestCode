@@ -15,6 +15,8 @@ namespace WebApplication1.Controllers
             return View();
         }
         public BaseController() {
+
+
             //try
             //{
 
