@@ -1,0 +1,323 @@
+﻿
+<div class="layui-body" style="width:80%">
+    <table class="layui-hide" id="test" lay-filter="demo"></table>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+</div>
+
+<script id="editForm" type="text/html">
+    <form id="form" class="layui-form" lay-filter="example">
+        <input name="UserId" type="hidden" />
+        <div class="layui-form - item">
+            <label class="layui-form-label"> 用户名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" lay-verify="pass" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input class="layui-radio-disbaled" type="radio" name="Gender" value="男" title="男">
+                <input type="radio" name="Gender" value="女" title="女">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证</label>
+            <div class="layui-input-inline">
+                <input type="text" name="Idcard" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">省市区</label>
+            <div class="layui-input-inline">
+                <select name="p" id="p" lay-filter="p">
+                    @*@foreach (var item in ViewBag.List)
+        {
+            <option value="@item.Addr1">@ViewBag.List1</option>
+        }*@
+
+                    <option value="" >请选择省</option>
+                    @foreach (var item in ViewBag.add)
+                    {
+
+                        @*if (ViewBag.Addrr == item.地区名称)
+                        {
+                            <option value="@item.地区编码" selected="selected">@item.地区名称</option>
+                        }
+                        else
+                        {*@
+                            <option value="@item.地区编码">@item.地区名称</option>
+                        @*}*@
+                    }
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select id="c" name="c" lay-filter="c">
+                    <option value="" selected=selected>请选择市</option>
+                    @*@ViewBag.cc
+                    @foreach (var city in ViewBag.city)
+                    {
+                        if (ViewBag.Addr2 == city.地区编码)
+                        {
+                            <option value="@city.地区编码" selected="selected">@city.地区名称</option>
+                        }
+                        else
+                        {
+                            <option value="@city.地区编码">@city.地区名称</option>
+                        }
+                    }*@
+                    
+
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="a" id="a" lay-filter="a">
+                    @*@foreach (var item in ViewBag.List)
+        {
+            <option value="@item.Addr3">@ViewBag.List3</option>
+        }*@
+                    <option value="" selected=selected>请选择县/区</option>
+                    @*@ViewBag.aa
+                    @foreach (var area in ViewBag.area)
+                    {
+                        if (ViewBag.Addr3== area.地区编码)
+                        {
+                            <option value="@area.地区编码" selected="selected">@area.地区名称</option>
+                        }
+                        else
+                        {
+                            <option value="@area.地区编码">@area.地区名称</option>
+                        }
+                    }*@
+                </select>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script>
+
+    layui.use(['table', 'form'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        //form.render('select');  //刷新select选择框
+        //form.render('select', 'p');
+        //form.on('select(selectfilter)', function (data) {
+        //    console.log(data.elem);    //原生Dom
+        //    console.log(data.value);   //选中的option的value
+        //    console.log(data.othis);   //美化后Dom
+        //})
+
+        table.render({
+            elem: '#test'
+            , url: '/Home/List/'
+            , title: '用户数据表'
+            , cellMinWidth: 100 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                , { field: 'UserId', width: 80, title: 'ID', sort: true }
+                , { field: 'UserName', width: 120, title: '用户名' }
+                , { field: 'sex', width: 80, title: '性别', sort: true }
+                , { field: 'Addr', width: 180, title: '城市' }
+                , { field: 'Idcard', title: '身份证号', width: '30%', minWidth: 100 } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , { field: 'Likes', title: '爱好' }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+            ]]
+            , page: true
+            , response: {
+                statusName: 'code'//数据状态的字段名称
+                , statusCode: 200//成功的状态码
+                , msgName: 'count'//数据总数的字段名称
+                , dataName: 'data'//数据列表的字段名称
+            }
+
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function (obj) {
+                                    form.val('example', {
+
+                            "Addr1": form.render('select', data.Addr1),
+                            "Addr2": data.Addr2,
+                            "Addr3": data.Addr3,
+
+            })
+            form.render();
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var str = $("#editForm").html();
+                //alert(JSON.stringify(data));
+                //layer.alert('编辑行：<br>' + JSON.stringify(data))
+
+                var open = layer.open({
+                    type: 1,    //iframe层
+                    area: ['800px', '400px'],
+                    fix: false, //不固定
+                    btn: ['确认', '取消'],//弹出层按钮
+                    maxmin: true,
+                    shadeClose: true,
+                    shade: 0.4,
+                    title: "编辑用户",
+                    offset: '50px',
+                    content: str,
+                    success: function (layero, index) {
+
+
+                      //  var p1 = getProvince();
+
+                        //console.log(p1)
+
+                        //var select = 'dd[lay-value=' + data.Addr1+ ']';
+                        //$('#p').siblings("div.layui-form-select").find('dl').find(select).click();
+                        //form.render();
+                        //$("#c").val(data.Addr3);
+                        //console.log(data.Addr1);
+                        //console.log($('#p').siblings("div.layui-form-select").find('dl').find(select));
+
+                        //console.log(form.render('select', data.Addr1))
+
+                        //console.log($("#p").val())
+                        var a = data.Addr.split(' ')[0]
+                        var b = data.Addr.split(' ')[1]
+                        var c = data.Addr.split(' ')[2]
+                        console.log('<option value=\" \" selected=\"selected\">a</option>')
+                        console.log(b)
+                        console.log(c)
+                        form.val('example', {
+
+                            "username": data.UserName, // "name": "value"
+                            "Gender": data.sex,
+                            "Idcard": data.Idcard,
+
+                            "p": a,
+                            "Addr2": b,
+                            "Addr3": c,
+
+                        })
+                        form.render();
+                    }
+                });
+
+
+
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+
+        });
+
+ getProvince();
+    form.on('select(p)', function (data) {
+        changeCity(data.value);
+    Area(data.value);
+
+});
+
+            form.on('select(c)', function (data) {
+        Area(data.value);
+
+
+    });
+            form.on('select(a)', function (data) {
+        GetArea(data.value);
+
+
+    });
+
+//  });
+
+//加载省
+        function getProvince() {
+            var url ='/Home/Provinces';
+        $.getJSON(url, function (data) {
+            $('#p').empty();
+            $.each(data, function (i, item) {
+                $('#p').append($('<option></option>').val(item.Value).text(item.Text));
+
+            });
+            form.render();
+        });
+
+
+    }
+
+//设置城市清空
+        function emptyCity() {
+        $('#c').empty();
+    $('#c').append($('<option></option>').val('').text('请选择'));
+    form.render();
+}
+
+//根据省加载城市
+
+            function changeCity(selectedProvinceId) {
+        alert(selectedProvinceId);
+
+    $.getJSON('@Url.Action("GetCities", "Home")', {id: selectedProvinceId }, function (data) {
+        $('#c').empty();
+    $.each(data, function (i, item) {
+        $('#c').append($('<option></option>').val(item.Value).text(item.Text));
+    });
+    form.render();
+    });
+
+
+}
+
+//设置清空区
+        function emptyArea() {
+        $('#a').empty();
+    $('#a').append($('<option></option>').val('').text('请选择'));
+    form.render();
+}
+//根据市加载区
+            function Area(selectedCityId) {
+
+        $.getJSON('@Url.Action("Area", "Home")', { id: selectedCityId }, function (data) {
+
+            $('#a').empty();
+
+            //alert(222);
+            $('#a').append($(' <option value="-1" selected=selected>--选择区--</option>'));
+
+            $.each(data, function (i, item) {
+                //alert(333);
+
+                $('#a').append($('<option></option>').val(item.Value).text(item.Text));
+                var selectedAreaId = $.trim($('#a option:selected').val());
+
+            });
+            form.render();
+        });
+
+
+
+
+    }
+
+            function GetArea(selectedAreaId) {
+        $.getJSON('@Url.Action("GetArea", "Home")', { id: selectedAreaId }, function (data) {
+
+            //alert(selectedAreaId);
+        });
+    form.render();
+}
+    });
+
+
+
+
+</script>
+
+
