@@ -12,6 +12,8 @@ namespace WebApplication1.Controllers
 {
     public class DataController : Controller
     {
+
+
         // GET: Data
         public ActionResult Index()
         {
