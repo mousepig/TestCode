@@ -1,0 +1,123 @@
+﻿
+
+<div class="layui-body">
+    <form method="post" action="/Data/Address" id="myform">
+
+        <select id="p" name="p">
+            <option value="-1" selected=selected>--选择省--</option>
+        </select>
+        <select id="c" name="c">
+            <option value="-1" selected=selected>--选择市--</option>
+        </select>
+        <select id="a">
+            <option value="-1" selected=selected>--选择区--</option>
+        </select><br /><br /><br />
+        <input type="button" onclick="submitform()" value="保存地址" />
+    </form>
+</div>
+
+@section scripts
+  {
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            getProvince();
+            $('#p').change(function () {
+                changeCity();
+                Area();
+            });
+            $('#c').change(function () {
+                Area();
+            });
+        });
+
+ //加载省
+        function getProvince() {
+$.getJSON('@Url.Action("Provinces", "Data")', function (data) {
+    $('#p').empty();
+    $.each(data, function (i, item)
+    {
+        $('#p').append($('<option></option>').val(item.Value).text(item.Text));
+    });
+            });
+        }
+
+ //设置城市清空
+        function emptyCity() {
+            $('#c').empty();
+            $('#c').append($('<option></option>').val('').text('请选择'));
+        }
+
+ //根据省加载城市
+
+        function changeCity() {
+            var selectedProvinceId = $.trim($('#p option:selected').val());
+            if (selectedProvinceId.length == 0) {
+                emptyCity();
+            } else {
+            $.getJSON('@Url.Action("GetCities", "Data")', { id: selectedProvinceId }, function (data) {
+                $('#c').empty();
+            $.each(data, function (i, item) {
+                $('#c').append($('<option></option>').val(item.Value).text(item.Text));
+                });
+                });
+            }
+        }
+
+        //设置清空区
+        function emptyArea() {
+            $('#a').empty();
+            $('#a').append($('<option></option>').val('').text('请选择'));
+        }
+        //根据市加载区
+        function Area() {
+            //alert(111);
+            var selectedCityId = $.trim($('#c option:selected').val());
+            // alert(222);
+            if (selectedCityId.length == 0) {
+                emptyArea();
+            } else {
+ $.getJSON('@Url.Action("Area", "Data")', { id: selectedCityId }, function (data) {
+
+     $('#a').empty();
+     //alert(222);
+     $('#a').append($(' <option value="-1" selected=selected>--选择区--</option>'));
+     $.each(data, function (i, item) {
+         //alert(333);
+         $('#a').append($('<option></option>').val(item.Value).text(item.Text));
+     });
+                });
+            }
+        }
+
+        function submitform() {
+
+            var json = $("#myform").serialize();
+            var p = $('#p option:selected').text();
+            var c = $('#c option:selected').text();
+            var a = $('#a option:selected').text();
+            //alert(p);
+            if (p == "-1") {
+                alert("请选择省！");
+                $("#p option:selected").focus();
+                return false;
+            }
+            if (c == "-1") {
+                alert("请选择市！");
+                $("#c").focus();
+                return false;
+            }
+            if (a== "-1") {
+                alert("请选择区！");
+                $("#a").focus();
+                return false;
+            }
+            $.post("/Data/address1", {p:p,c:c,a:a}, function (obj) {
+                alert(obj.msg)
+
+            }, "json");
+
+        }
+    </script>
+}
