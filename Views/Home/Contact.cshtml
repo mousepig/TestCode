@@ -1,0 +1,23 @@
+﻿
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+  $.ajax({
+
+            type: 'post',
+
+            url: '/Home/Contact1',
+
+            dataType: 'json',
+
+            success: function (e) {
+
+                //data: e.name
+                data: e.dateArr
+            }
+
+
+
+
+
+        });
+    </script>

@@ -1,0 +1,76 @@
+﻿
+        <form method="post" action="/Home/Address" id="myform">
+
+                <select id="p" name="p" >
+                    <option value="-1" selected=selected>--选择省--</option>
+                </select>
+                <select id="c" name="c" >
+                    <option value="-1" selected=selected>--选择市--</option>
+                </select>
+                <select id="county" >
+                    <option value="-1" selected=selected>--选择区--</option>
+                </select>
+            </form>
+   
+
+    @section scripts
+  {
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript">
+
+  $(function () {
+  getProvince();
+ $('#p').change(function () {
+  changeCity();
+  });
+
+  });
+
+ //加载省
+        function getProvince() {
+
+            $.getJSON('@Url.Action("Provinces", "Home")', function (data) {
+
+ $('#p').empty();
+          $.each(data, function (i, item) {
+
+ $('#p').append($('<option></option>').val(item.Value).text(item.Text));
+  });
+            });
+
+
+            //$.post("/Home/GetProvinces", json, function (obj) {
+
+            //    alert(item.msg);
+
+            //}, "json");
+  }
+
+ //设置城市清空
+  function emptyCity() {
+ $('#c').empty();
+ $('#c').append($('<option></option>').val('').text('请选择'));
+  }
+
+ //根据省加载城市
+
+        function changeCity() {
+           // alert(111);
+            var selectedProvinceId = $.trim($('#p option:selected').val());
+           // alert(222);
+            if (selectedProvinceId.length == 0) {
+                //alert(333);
+ emptyCity();
+            } else {
+                //alert(444);
+ $.getJSON('@Url.Action("GetCities", "Home")', { id: selectedProvinceId }, function (data) {
+
+ $('#c').empty();
+  $.each(data, function (i, item) {
+ $('#c').append($('<option></option>').val(item.Value).text(item.Text));
+  });
+  });
+  }
+  }
+        </script>
+    }
